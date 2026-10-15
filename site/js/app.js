@@ -236,14 +236,14 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
   let svgHtml = `
     <defs>
       <linearGradient id="chartAreaGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#10b981" stop-opacity="0.40" />
-        <stop offset="60%" stop-color="#059669" stop-opacity="0.12" />
-        <stop offset="100%" stop-color="#041a10" stop-opacity="0" />
+        <stop offset="0%" stop-color="#059669" stop-opacity="0.25" />
+        <stop offset="65%" stop-color="#10b981" stop-opacity="0.06" />
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
       </linearGradient>
       <linearGradient id="chartLineGrad" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#34d399" />
-        <stop offset="50%" stop-color="#10b981" />
-        <stop offset="100%" stop-color="#a7f3d0" />
+        <stop offset="0%" stop-color="#059669" />
+        <stop offset="50%" stop-color="#047857" />
+        <stop offset="100%" stop-color="#10b981" />
       </linearGradient>
     </defs>
   `;
@@ -253,8 +253,8 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
     const val = (maxSales / 4) * i;
     const y = getY(val);
     svgHtml += `
-      <line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="rgba(52,211,153,0.1)" stroke-dasharray="3,3" />
-      <text x="${padLeft - 8}" y="${y + 4}" fill="#6ee7b7" font-size="10" font-family="'JetBrains Mono'" text-anchor="end">${formatCompact(val)}</text>
+      <line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="rgba(16,185,129,0.14)" stroke-dasharray="3,3" />
+      <text x="${padLeft - 8}" y="${y + 4}" fill="#527561" font-size="10" font-family="'JetBrains Mono'" text-anchor="end">${formatCompact(val)}</text>
     `;
   }
 
@@ -271,13 +271,13 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
   areaD += ` L ${getX(dataPoints.length - 1)} ${padTop + plotH} L ${getX(0)} ${padTop + plotH} Z`;
 
   svgHtml += `<path d="${areaD}" fill="url(#chartAreaGrad)" />`;
-  svgHtml += `<path d="${lineD}" fill="none" stroke="url(#chartLineGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+  svgHtml += `<path d="${lineD}" fill="none" stroke="url(#chartLineGrad)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />`;
 
   // X Labels
   dataPoints.forEach((d, i) => {
     if (i % 6 === 0 || i === dataPoints.length - 1) {
       svgHtml += `
-        <text x="${getX(i)}" y="${height - 8}" fill="#a7f3d0" font-size="10" font-family="'JetBrains Mono'" text-anchor="middle">${d.date}</text>
+        <text x="${getX(i)}" y="${height - 8}" fill="#527561" font-size="10" font-family="'JetBrains Mono'" text-anchor="middle">${d.date}</text>
       `;
     }
   });
@@ -285,7 +285,7 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
   // Points
   dataPoints.forEach((d, i) => {
     svgHtml += `
-      <circle class="svg-hover-point" data-idx="${i}" cx="${getX(i)}" cy="${getY(d.sales)}" r="3.5" fill="#06150e" stroke="#34d399" stroke-width="2" style="cursor: pointer;" />
+      <circle class="svg-hover-point" data-idx="${i}" cx="${getX(i)}" cy="${getY(d.sales)}" r="3.5" fill="#ffffff" stroke="#059669" stroke-width="2" style="cursor: pointer;" />
     `;
   });
 

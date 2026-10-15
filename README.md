@@ -7,39 +7,45 @@ An end-to-end data warehousing and business intelligence solution built on **SQL
 ## 🏗️ Architecture & Data Flow
 
 Data originates from two distinct business source systems (**CRM** and **ERP**) and flows through a three-layer Medallion architecture before being served to end-user applications:
+![Enterprise Data Architecture](docs/data_architecture.png)
 
-Source CSV Files (CRM + ERP)
-│
-│  BULK INSERT (bronze.load_bronze)
-▼
-┌─────────────────┐
-│  Bronze Layer   │  Raw, immutable landing tables
-└────────┬────────┘
-│
-│  silver.load_silver (Deduplication, Cleaning, Key Normalization)
-▼
-┌─────────────────┐
-│  Silver Layer   │  Cleaned & conformed tables (SCD Type 2, Trimmed, Normalized)
-└────────┬────────┘
-│
-│  Views (Star Schema)
-▼
-┌─────────────────┐
-│   Gold Layer    │  dim_customers, dim_products, fact_sales
-└────────┬────────┘
-│
-pyodbc │  pipeline/run_pipeline.py (Automated execution + Data Quality assertions)
-▼
-┌─────────────────┐
-│   FastAPI API   │  REST endpoints exposing analytics & KPIs (api/main.py)
-└────────┬────────┘
-│
-HTTP/JSON │  Zero direct DB credentials in presentation tier
-▼
-┌─────────────────┐       ┌─────────────────┐
-│ Custom Portal   │  and  │ Streamlit App   │
-│ (site/index.html│       │(app/dashboard.py)
-└─────────────────┘       └─────────────────┘
+```mermaid
+flowchart TD
+    subgraph Sources ["1. Source Systems (CSV Flat Files)"]
+        CRM["CRM System<br/>• cust_info.csv<br/>• prd_info.csv<br/>• sales_details.csv"]
+        ERP["ERP System<br/>• CUST_AZ12.csv<br/>• LOC_A101.csv<br/>• PX_CAT_G1V2.csv"]
+    end
+
+    subgraph Bronze ["2. Bronze Tier (Raw Staging)"]
+        B_PROC["Stored Proc: bronze.load_bronze<br/>(T-SQL BULK INSERT + TABLOCK)"]
+        B_TABLES[("Immutable Landing Tables<br/>crm_* & erp_*")]
+    end
+
+    subgraph Silver ["3. Silver Tier (Quality & Conformance)"]
+        S_PROC["Stored Proc: silver.load_silver<br/>(Deduplication, Key Alignment, SCD Type 2)"]
+        S_TABLES[("Cleaned & Enriched Tables<br/>crm_* & erp_*")]
+    end
+
+    subgraph Gold ["4. Gold Tier (Business Star Schema)"]
+        G_VIEWS[("Analytical Views (Star Schema)<br/>• gold.dim_customers<br/>• gold.dim_products<br/>• gold.fact_sales")]
+    end
+
+    subgraph Serving ["5. Consumption & Applications"]
+        API["FastAPI REST Gateway (Port 8000)<br/>Parameterized T-SQL • Thread-pooled pyodbc"]
+        PORTAL["Enterprise Analytics Portal<br/>(site/index.html • Executive Green UI)"]
+        APP["Streamlit Dashboard<br/>(app/dashboard.py)"]
+    end
+
+    Sources --> B_PROC --> B_TABLES
+    B_TABLES --> S_PROC --> S_TABLES
+    S_TABLES --> G_VIEWS
+    G_VIEWS --> API
+    API --> PORTAL
+    API --> APP
+```
+
+![Data Flow Pipeline](docs/data_flow.png)
+>>>>>>> de5c988 (Refine design: Light mint/sage green background with frosted mirror glass cards, remove LICENSE, and embed visual architecture diagrams in README)
 
 ## 📖 System Overview & Medallion Design
 
