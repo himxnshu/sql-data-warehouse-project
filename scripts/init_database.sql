@@ -13,7 +13,7 @@ WARNING:
     and ensure you have proper backups before running this script.
 */
 
-USE master;
+USE DataWarehouse;
 GO
 
 -- Drop and recreate the 'DataWarehouse' database

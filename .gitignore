@@ -1,25 +1,29 @@
-# Ignore system-specific files
-.DS_Store
-Thumbs.db
-
-# Ignore local configuration files
+# Environment & Local Secrets
+.env
 *.env
 
-# Ignore SQL Server-related files
+# Python & Virtual Environments
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs & Pipeline Outputs
+logs/
+*.log
+
+# SQL Server Database & Backup Files
 *.mdf
 *.ldf
 *.ndf
-
-# Ignore temporary or backup files
-*.log
 *.bak
-*.tmp
 
-# Ignore IDE-specific files
+# IDE & Editor Settings
 .vscode/
 .idea/
+.vs/
 
-# Ignore exported data or diagrams (if applicable)
-*.csv
-*.png
-*.pdf
+# OS Metadata
+.DS_Store
+Thumbs.db
+*.tmp

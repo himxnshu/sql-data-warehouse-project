@@ -1,145 +1,192 @@
-# Data Warehouse and Analytics Project
+# Enterprise Sales Data Warehouse & Analytics Platform
 
-Welcome to the **Data Warehouse and Analytics Project** repository! 🚀  
-This project demonstrates a comprehensive data warehousing and analytics solution, from building a data warehouse to generating actionable insights. Designed as a portfolio project, it highlights industry best practices in data engineering and analytics.
-
----
-## 🏗️ Data Architecture
-
-The data architecture for this project follows Medallion Architecture **Bronze**, **Silver**, and **Gold** layers:
-![Data Architecture](docs/data_architecture.png)
-
-1. **Bronze Layer**: Stores raw data as-is from the source systems. Data is ingested from CSV Files into SQL Server Database.
-2. **Silver Layer**: This layer includes data cleansing, standardization, and normalization processes to prepare data for analysis.
-3. **Gold Layer**: Houses business-ready data modeled into a star schema required for reporting and analytics.
-
----
-## 📖 Project Overview
-
-This project involves:
-
-1. **Data Architecture**: Designing a Modern Data Warehouse Using Medallion Architecture **Bronze**, **Silver**, and **Gold** layers.
-2. **ETL Pipelines**: Extracting, transforming, and loading data from source systems into the warehouse.
-3. **Data Modeling**: Developing fact and dimension tables optimized for analytical queries.
-4. **Analytics & Reporting**: Creating SQL-based reports and dashboards for actionable insights.
-
-🎯 This repository is an excellent resource for professionals and students looking to showcase expertise in:
-- SQL Development
-- Data Architect
-- Data Engineering  
-- ETL Pipeline Developer  
-- Data Modeling  
-- Data Analytics  
+An end-to-end data warehousing and business intelligence solution built on **SQL Server** using the **Medallion Architecture**, upgraded with an automated **Python ETL runner**, a **FastAPI** backend service, and an interactive **Streamlit** dashboard.
 
 ---
 
-## 🛠️ Important Links & Tools:
+## 🏗️ Architecture & Data Flow
 
-Everything is for Free!
-- **[Datasets](datasets/):** Access to the project dataset (csv files).
-- **[SQL Server Express](https://www.microsoft.com/en-us/sql-server/sql-server-downloads):** Lightweight server for hosting your SQL database.
-- **[SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16):** GUI for managing and interacting with databases.
-- **[Git Repository](https://github.com/):** Set up a GitHub account and repository to manage, version, and collaborate on your code efficiently.
-- **[DrawIO](https://www.drawio.com/):** Design data architecture, models, flows, and diagrams.
-- **[Notion](https://www.notion.com/templates/sql-data-warehouse-project):** Get the Project Template from Notion
-- **[Notion Project Steps](https://thankful-pangolin-2ca.notion.site/SQL-Data-Warehouse-Project-16ed041640ef80489667cfe2f380b269?pvs=4):** Access to All Project Phases and Tasks.
+Data originates from two distinct business source systems (**CRM** and **ERP**) and flows through a three-layer Medallion architecture before being served to end-user applications:
+Source CSV Files (CRM + ERP)
+│
+│  BULK INSERT (bronze.load_bronze)
+▼
+┌─────────────────┐
+│  Bronze Layer   │  Raw, immutable landing tables
+└────────┬────────┘
+│
+│  silver.load_silver (Deduplication, Cleaning, Key Normalization)
+▼
+┌─────────────────┐
+│  Silver Layer   │  Cleaned & conformed tables (SCD Type 2, Trimmed, Normalized)
+└────────┬────────┘
+│
+│  Views (Star Schema)
+▼
+┌─────────────────┐
+│   Gold Layer    │  dim_customers, dim_products, fact_sales
+└────────┬────────┘
+│
+pyodbc │  pipeline/run_pipeline.py (Automated execution + Data Quality assertions)
+▼
+┌─────────────────┐
+│   FastAPI API   │  REST endpoints exposing analytics & KPIs (api/main.py)
+└────────┬────────┘
+│
+HTTP/JSON │  Zero direct DB credentials in presentation tier
+▼
+┌─────────────────┐       ┌─────────────────┐
+│ Custom Portal   │  and  │ Streamlit App   │
+│ (site/index.html│       │(app/dashboard.py)
+└─────────────────┘       └─────────────────┘
+
+## 📖 System Overview & Medallion Design
+
+### 1. Data Sources
+* **CRM System:**
+  * `cust_info.csv`: Customer accounts, registration dates, gender, and marital status.
+  * `prd_info.csv`: Product catalog with pricing history and composite category keys.
+  * `sales_details.csv`: Sales orders, line-item quantities, prices, and transaction dates.
+* **ERP System:**
+  * `CUST_AZ12.csv`: Customer birthdates and demographic identifiers.
+  * `LOC_A101.csv`: Customer geographic locations and countries.
+  * `PX_CAT_G1V2.csv`: Product taxonomy, categories, and maintenance indicators.
+
+### 2. Processing Layers
+* **Bronze (Raw Ingestion):**
+  * Direct ingestion using T-SQL `BULK INSERT` with `TABLOCK` for minimal logging and high throughput.
+  * Schema matches source files 1:1 without type enforcement or mutations.
+* **Silver (Standardization & Quality):**
+  * **Deduplication:** Windowed partitioning (`ROW_NUMBER() OVER (...)`) to isolate latest records.
+  * **Key Normalization:** String manipulation (`SUBSTRING`, `REPLACE`) to resolve disparate CRM and ERP key conventions (e.g., stripping legacy prefixes like `NAS` and composite delimiters).
+  * **Historization:** SCD Type 2 product end-date computation using `LEAD()`.
+  * **Data Integrity:** Whitespace trimming, code standardizations (`M`/`S` $\rightarrow$ `Married`/`Single`), and audit metadata (`dwh_create_date`).
+* **Gold (Business Dimension & Facts):**
+  * Analytical Star Schema modeled through views.
+  * **Dimensions:** `dim_customers`, `dim_products` (current version).
+  * **Facts:** `fact_sales` (transaction metrics joined to dimensional surrogate keys).
 
 ---
-
-## 🚀 Project Requirements
-
-### Building the Data Warehouse (Data Engineering)
-
-#### Objective
-Develop a modern data warehouse using SQL Server to consolidate sales data, enabling analytical reporting and informed decision-making.
-
-#### Specifications
-- **Data Sources**: Import data from two source systems (ERP and CRM) provided as CSV files.
-- **Data Quality**: Cleanse and resolve data quality issues prior to analysis.
-- **Integration**: Combine both sources into a single, user-friendly data model designed for analytical queries.
-- **Scope**: Focus on the latest dataset only; historization of data is not required.
-- **Documentation**: Provide clear documentation of the data model to support both business stakeholders and analytics teams.
-
----
-
-### BI: Analytics & Reporting (Data Analysis)
-
-#### Objective
-Develop SQL-based analytics to deliver detailed insights into:
-- **Customer Behavior**
-- **Product Performance**
-- **Sales Trends**
-
-These insights empower stakeholders with key business metrics, enabling strategic decision-making.  
-
-For more details, refer to [docs/requirements.md](docs/requirements.md).
 
 ## 📂 Repository Structure
+
+```text
+├── datasets/                 # Raw CSV files (CRM and ERP sources)
+│   ├── cust_info.csv
+│   ├── prd_info.csv
+│   ├── sales_details.csv
+│   ├── CUST_AZ12.csv
+│   ├── LOC_A101.csv
+│   └── PX_CAT_G1V2.csv
+├── docs/                     # Schemas, data models, and architectural diagrams
+├── scripts/                  # T-SQL Scripts
+│   ├── bronze/               # DDL & bronze.load_bronze stored procedure
+│   ├── silver/               # DDL & silver.load_silver stored procedure
+│   └── gold/                 # DDL views (dim_customers, dim_products, fact_sales)
+├── pipeline/
+│   └── run_pipeline.py       # Python ETL execution runner with validation assertions
+├── site/                     # Custom Enterprise Analytics Portal & Data Catalog UI
+│   ├── index.html            # Interactive web portal
+│   ├── css/style.css         # Modern vanilla CSS design system
+│   ├── js/app.js             # Client application logic & chart rendering
+│   ├── js/data.js            # Gold mart dimensional datasets & catalogs
+│   └── assets/images/        # High-res architectural diagrams
+├── api/
+│   ├── __init__.py
+│   └── main.py               # FastAPI backend with parameterized queries & portal mounting
+├── app/
+│   └── dashboard.py          # Multi-tab Streamlit dashboard
+├── db.py                     # Context-managed pyodbc connection helper
+├── .env.example              # Database and application environment template
+├── .gitignore                # Git ignore configuration
+├── requirements.txt          # Python dependencies
+└── README.md
+
+⚙️ Setup & Installation
+Prerequisites
+Python 3.10+
+
+Microsoft SQL Server (Developer Edition or Express)
+
+ODBC Driver for SQL Server (Version 17 or 18)
+
+1. Database Initialization
+Execute the SQL scripts inside SSMS or Azure Data Studio in the following sequence:
+
+#scripts/bronze/ddl_bronze.sql
+#scripts/bronze/proc_load_bronze.sql
+#scripts/silver/ddl_silver.sql
+#scripts/silver/proc_load_silver.sql
+#scripts/gold/ddl_gold.sql
+
+2. Application Setup
+# Clone the repository
+git clone <your-repo-url>
+cd sql-data-warehouse-project
+
+# Create and activate virtual environment
+python -m venv .venv
+
+# Windows:
+.\.venv\Scripts\activate
+# Linux/macOS:
+source .venv/bin/activate
+
+# Install required dependencies
+pip install -r requirements.txt
+
+# Configure environment variables
+copy .env.example .env    # Linux/macOS: cp .env.example .env
+
+Open .env and set your connection parameters:
+DB_SERVER=localhost\SQLEXPRESS
+DB_NAME=DataWarehouse
+DB_DRIVER=ODBC Driver 18 for SQL Server
+DB_TRUSTED=yes
+API_URL=http://localhost:8000
+
+🚀 Execution
+Step 1: Run the ETL Pipeline
+Executes the warehouse stored procedures, logs execution progress to logs/pipeline.log, and runs data-quality assertions (row count checks, primary key uniqueness, and fact fan-out validation):
+# Full pipeline (Bronze -> Silver -> Validation)
+python -m pipeline.run_pipeline
+
+# Skip bronze loading if CSVs are already ingested:
+python -m pipeline.run_pipeline --skip-bronze
+Step 2: Start the FastAPI Service & Custom Web Portal
+Launches the REST API backend and serves the custom interactive enterprise portal:
+
+```bash
+uvicorn api.main:app --reload
 ```
-data-warehouse-project/
-│
-├── datasets/                           # Raw datasets used for the project (ERP and CRM data)
-│
-├── docs/                               # Project documentation and architecture details
-│   ├── etl.drawio                      # Draw.io file shows all different techniquies and methods of ETL
-│   ├── data_architecture.drawio        # Draw.io file shows the project's architecture
-│   ├── data_catalog.md                 # Catalog of datasets, including field descriptions and metadata
-│   ├── data_flow.drawio                # Draw.io file for the data flow diagram
-│   ├── data_models.drawio              # Draw.io file for data models (star schema)
-│   ├── naming-conventions.md           # Consistent naming guidelines for tables, columns, and files
-│
-├── scripts/                            # SQL scripts for ETL and transformations
-│   ├── bronze/                         # Scripts for extracting and loading raw data
-│   ├── silver/                         # Scripts for cleaning and transforming data
-│   ├── gold/                           # Scripts for creating analytical models
-│
-├── tests/                              # Test scripts and quality files
-│
-├── README.md                           # Project overview and instructions
-├── LICENSE                             # License information for the repository
-├── .gitignore                          # Files and directories to be ignored by Git
-└── requirements.txt                    # Dependencies and requirements for the project
+
+* **Interactive Enterprise Web Portal:** [http://localhost:8000/portal](http://localhost:8000/portal) (or simply open `site/index.html` in any browser)
+* **Static Assets & Portal:** [http://localhost:8000/site/](http://localhost:8000/site/)
+* **Interactive Swagger UI documentation:** [http://localhost:8000/docs](http://localhost:8000/docs)
+
+Step 3: Launch the Streamlit Dashboard (Optional)
+In a separate terminal window (with .venv active):
+```bash
+streamlit run app/dashboard.py
 ```
----
 
-## ☕ Stay Connected
+## 🔌 API Reference
 
-Let's stay in touch! Feel free to connect with me on the following platforms:
+| Endpoint | Method | Parameters | Description |
+|---|---|---|---|
+| `/health` | `GET` | — | Validates active database connectivity |
+| `/kpis` | `GET` | — | Summary metrics (Total Sales, Orders, Volume, AOV) |
+| `/customers` | `GET` | `country`, `limit`, `offset` | Paginated customer master directory |
+| `/customers/{customer_id}` | `GET` | `customer_id` | Specific profile with lifetime order value |
+| `/products` | `GET` | `category`, `limit`, `offset` | Active product dimension listings |
+| `/sales` | `GET` | `start_date`, `end_date`, `limit`, `offset` | Enriched order line transactions |
+| `/analytics/sales-by-country` | `GET` | — | Geographic revenue aggregation |
+| `/analytics/sales-by-category` | `GET` | — | Category volume and revenue metrics |
+| `/analytics/monthly-sales` | `GET` | — | Historical monthly revenue timeline |
+| `/analytics/top-customers` | `GET` | `limit` | Ranked customer sales performance |
+| `/analytics/top-products` | `GET` | `limit` | Ranked product SKU performance |
 
-[![YouTube](https://img.shields.io/badge/YouTube-red?style=for-the-badge&logo=youtube&logoColor=white)](http://bit.ly/3GiCVUE)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/baraa-khatib-salkini)
-[![Website](https://img.shields.io/badge/Website-000000?style=for-the-badge&logo=google-chrome&logoColor=white)](https://www.datawithbaraa.com)
-[![Newsletter](https://img.shields.io/badge/Newsletter-FF5722?style=for-the-badge&logo=substack&logoColor=white)](https://bit.ly/BaraaNewsletter)
-[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/baraasalkini)
-[![Join](https://img.shields.io/badge/Join-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@datawithbaraa)
-
-All Courses and their materials are completely free, and all I ask is your support through subscribing, liking, and commenting on my channel. Your engagement means the world to me and It help the channel!
-- ✅ **SQL Full Course:** [Course Link](https://youtu.be/SSKVgrwhzus) | [Download Materials](https://www.datawithbaraa.com/sql-introduction/sql-ultimate-course/) | [GIT Repo](https://github.com/DataWithBaraa/sql-ultimate-course)
-- ✅ **Tableau Full Course:** [Course Link](https://www.youtube.com/watch?v=K3pXnbniUcM) | [Download Materials](https://www.datawithbaraa.com/tableau/tableau-thank-you/) | [Public](https://public.tableau.com/app/profile/baraa.salkini/vizzes)
-
-- ✅ **SQL Data Warehouse Project:** [Course Link](https://youtu.be/SSKVgrwhzus) | [Download Materials](https://www.datawithbaraa.com/sql-introduction/advanced-sql-project/) | [GIT Repo](https://github.com/DataWithBaraa/sql-data-warehouse-project)
-- ✅ **SQL Exploratory Data Analysis Project:** [Course Link](https://youtu.be/SSKVgrwhzus) | [Download Materials](https://www.datawithbaraa.com/sql-introduction/advanced-sql-analytics-project/) | [GIT Repo](https://github.com/DataWithBaraa/sql-data-analytics-project)
-- ✅ **SQL Advanced Data Analysis Project:** [Course Link](https://youtu.be/SSKVgrwhzus) | [Download Materials](https://www.datawithbaraa.com/sql-introduction/advanced-sql-analytics-project/) | [GIT Repo](https://github.com/DataWithBaraa/sql-data-analytics-project)
-  
-- ✅ **Tableau Sales Project:** [Course Link](https://www.youtube.com/watch?v=dahrmqT5GD4) | [Download Materials](https://datawithbaraa.substack.com/p/access-to-course-materials) | [Public](https://public.tableau.com/app/profile/baraa.salkini/vizzes)
-- ✅ **Tableau HR Project:** [Course Link](https://www.youtube.com/watch?v=UcGF09Awm4Y) | [Download Materials](https://datawithbaraa.substack.com/p/access-to-course-materials) | [Public](https://public.tableau.com/app/profile/baraa.salkini/vizzes)
-- ✅ **ChatGPT:** [Course Link](https://www.youtube.com/watch?v=LJLNfei4i-c) | [Download Materials](https://datawithbaraa.substack.com/p/access-to-course-materials)
-
----
-
-## 🛡️ License
-
-This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and share this project with proper attribution.
-
-## 🌟 About Me
-
-Hi there! I'm **Baraa Khatib Salkini**, also known as **Data With Baraa**. I’m an IT professional and passionate YouTuber on a mission to share knowledge and make working with data enjoyable and engaging!
-
-Let's stay in touch! Feel free to connect with me on the following platforms:
-
-[![YouTube](https://img.shields.io/badge/YouTube-red?style=for-the-badge&logo=youtube&logoColor=white)](http://bit.ly/3GiCVUE)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/baraa-khatib-salkini)
-[![Website](https://img.shields.io/badge/Website-000000?style=for-the-badge&logo=google-chrome&logoColor=white)](https://www.datawithbaraa.com)
-[![Newsletter](https://img.shields.io/badge/Newsletter-FF5722?style=for-the-badge&logo=substack&logoColor=white)](https://bit.ly/BaraaNewsletter)
-[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/baraasalkini)
-[![Join](https://img.shields.io/badge/Join-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@datawithbaraa)
+🛡️ Engineering Decisions
+SQL Injection Prevention: All endpoints in the API layer use parameterized queries (? parameter binding) rather than dynamic string formatting.
+Separation of Concerns: The Streamlit user interface communicates solely via HTTP/JSON through the FastAPI layer, ensuring database credentials and connection pools remain isolated from the presentation tier.
+Pipeline Fault Tolerance: The Python pipeline monitors stored procedure execution buffers and intercepts custom SQL error banners within TRY...CATCH blocks, returning programmatic exit codes (0 or 1) for external orchestrators.
