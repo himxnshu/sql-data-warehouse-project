@@ -7,6 +7,7 @@ An end-to-end data warehousing and business intelligence solution built on **SQL
 ## 🏗️ Architecture & Data Flow
 
 Data originates from two distinct business source systems (**CRM** and **ERP**) and flows through a three-layer Medallion architecture before being served to end-user applications:
+
 Source CSV Files (CRM + ERP)
 │
 │  BULK INSERT (bronze.load_bronze)
