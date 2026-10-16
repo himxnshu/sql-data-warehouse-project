@@ -13,7 +13,11 @@ from datetime import date
 from pathlib import Path
 from typing import Optional
 
-import pyodbc
+try:
+    import pyodbc
+except Exception:
+    pyodbc = None
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -21,7 +25,10 @@ from starlette.concurrency import run_in_threadpool
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # lets `import db` work from anywhere
 
-import db  # noqa: E402  (shared connection helper, reads .env)
+try:
+    import db  # noqa: E402  (shared connection helper, reads .env)
+except Exception:
+    db = None
 
 log = logging.getLogger("uvicorn.error")
 
@@ -50,9 +57,11 @@ if SITE_DIR.exists():
 # --------------------------------------------------------------------------- #
 def _exec_db_query(sql: str, params: Optional[list] = None) -> list[dict]:
     """Synchronous database worker invoked within a thread pool worker."""
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database module not available (ODBC missing or offline)")
     try:
         return db.query(sql, params or [])
-    except (pyodbc.Error, RuntimeError):
+    except Exception:
         log.exception("Database error occurred while executing query.")
         raise HTTPException(status_code=503, detail="Database unavailable or query failed")
 
