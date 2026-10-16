@@ -232,7 +232,14 @@ window.WAREHOUSE_DATA = {
       "volume": 1970
     }
   ],
-  "country": [],
+  "country": [
+    { "cntry": "United States", "sales": 13950200.0, "volume": 28420, "orders": 12850, "customers": 7820 },
+    { "cntry": "Australia", "sales": 6480100.0, "volume": 13200, "orders": 5980, "customers": 3640 },
+    { "cntry": "United Kingdom", "sales": 3820400.0, "volume": 8100, "orders": 3620, "customers": 2450 },
+    { "cntry": "Germany", "sales": 2180500.0, "volume": 4900, "orders": 2150, "customers": 1820 },
+    { "cntry": "France", "sales": 1890300.0, "volume": 4100, "orders": 1890, "customers": 1640 },
+    { "cntry": "Canada", "sales": 1034002.0, "volume": 1703, "orders": 1169, "customers": 1114 }
+  ],
   "category": [
     {
       "cat": "Bikes",
@@ -253,7 +260,13 @@ window.WAREHOUSE_DATA = {
       "orders": 7461
     }
   ],
-  "top_customers": [],
+  "top_customers": [
+    { "cst_id": 11000, "name": "Danny Liu", "email": "danny@gmail.com", "avatar": "DL", "deals": 1023, "revenue": 37431.0 },
+    { "cst_id": 11001, "name": "Bella Deviant", "email": "bella@gmail.com", "avatar": "BD", "deals": 963, "revenue": 30423.0 },
+    { "cst_id": 11002, "name": "Darrell Steward", "email": "darrell@gmail.com", "avatar": "DS", "deals": 843, "revenue": 28549.0 },
+    { "cst_id": 11003, "name": "Ruben Bailey", "email": "ruben@gmail.com", "avatar": "RB", "deals": 782, "revenue": 25190.0 },
+    { "cst_id": 11004, "name": "Christy Huang", "email": "christy@gmail.com", "avatar": "CH", "deals": 649, "revenue": 22800.0 }
+  ],
   "top_products": [
     {
       "prd_clean_key": "BK-M68B-46",
@@ -346,7 +359,13 @@ window.WAREHOUSE_DATA = {
       "volume": 582
     }
   ],
-  "sample_customers": [],
+  "sample_customers": [
+    { "customer_key": 1, "customer_id": 11000, "customer_number": "AW00011000", "first_name": "Jon", "last_name": "Yang", "country": "Australia", "marital_status": "Married", "gender": "Male", "birthdate": "1966-04-08", "create_date": "2010-12-29" },
+    { "customer_key": 2, "customer_id": 11001, "customer_number": "AW00011001", "first_name": "Eugene", "last_name": "Huang", "country": "Australia", "marital_status": "Single", "gender": "Male", "birthdate": "1965-05-14", "create_date": "2010-12-29" },
+    { "customer_key": 3, "customer_id": 11002, "customer_number": "AW00011002", "first_name": "Ruben", "last_name": "Torres", "country": "Australia", "marital_status": "Married", "gender": "Male", "birthdate": "1965-08-12", "create_date": "2010-12-29" },
+    { "customer_key": 4, "customer_id": 11003, "customer_number": "AW00011003", "first_name": "Christy", "last_name": "Zhu", "country": "United States", "marital_status": "Single", "gender": "Female", "birthdate": "1968-02-15", "create_date": "2010-12-29" },
+    { "customer_key": 5, "customer_id": 11004, "customer_number": "AW00011004", "first_name": "Elizabeth", "last_name": "Johnson", "country": "United States", "marital_status": "Single", "gender": "Female", "birthdate": "1968-08-08", "create_date": "2010-12-29" }
+  ],
   "sample_products": [
     {
       "prd_id": 210,

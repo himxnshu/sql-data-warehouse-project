@@ -1,58 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enterprise Sales Data Warehouse · Executive Platform</title>
-  <meta name="description" content="Production-grade T-SQL Medallion Data Warehouse on Microsoft SQL Server featuring automated Python ETL, FastAPI REST service, and Star Schema analytics.">
+  <meta name="description"
+    content="Production-grade T-SQL Medallion Data Warehouse on Microsoft SQL Server featuring automated Python ETL, FastAPI REST service, and Star Schema analytics.">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
 </head>
+
 <body>
 
   <div class="app-shell" id="app-shell">
-    
+
     <!-- =========================================================================
          LEFT SIDEBAR (Inspired by AeuxGlobal Modern SaaS Dashboard)
          ========================================================================= -->
+    <!-- =========================================================================
+         LEFT SIDEBAR (Matte Dark Rail with Electric Lime Active State)
+         ========================================================================= -->
     <aside class="sidebar" id="app-sidebar">
-      <!-- Brand & Workspace -->
-      <div class="sidebar-header">
-        <div class="brand-box">
-          <div class="brand-logo-icon">
-            <span>⫸</span>
-          </div>
-          <div class="brand-titles">
-            <span class="brand-name">SQL Project</span>
-            <span class="brand-version">DWH v2.4</span>
-          </div>
-        </div>
-
-        <div class="workspace-card" id="workspace-card">
-          <div class="workspace-avatar">⚡</div>
-          <div class="workspace-info">
-            <span class="workspace-title">Enterprise Warehouse</span>
-            <span class="workspace-engine">SQL Server · Gold Mart</span>
-          </div>
-          <span class="workspace-status-dot" title="Database Connected"></span>
+      <!-- User Profile Header (Inspired by Guy Hawkins in image) -->
+      <div class="sidebar-user-header">
+        <div class="user-avatar-round">HS</div>
+        <div class="user-header-info">
+          <span class="user-header-name">Himanshu Sharma</span>
+          <span class="user-header-role">Lead Data Engineer</span>
         </div>
       </div>
 
       <!-- Quick Search Bar -->
       <div class="sidebar-search">
         <span class="search-icon">🔍</span>
-        <input type="text" id="global-search-input" placeholder="Search metrics, tables..." oninput="handleGlobalSearch(this.value)">
+        <input type="text" id="global-search-input" placeholder="Search..." oninput="handleGlobalSearch(this.value)">
         <span class="search-hotkey">⌘K</span>
       </div>
 
       <!-- Navigation Links -->
       <nav class="sidebar-nav">
-        <div class="nav-group-label">NAVIGATION</div>
+        <div class="nav-group-label">DASHBOARDS</div>
         <ul class="nav-menu">
           <li class="nav-item">
             <button class="nav-btn active" id="btn-nav-dashboard" onclick="navigateTo('view-dashboard')">
-              <span class="nav-icon">📊</span>
-              <span class="nav-label">Dashboard</span>
+              <span class="nav-icon">⸬</span>
+              <span class="nav-label">Overview</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-btn" id="btn-nav-medallion" onclick="navigateTo('view-medallion')">
+              <span class="nav-icon">🏗️</span>
+              <span class="nav-label">Medallion Pipeline</span>
             </button>
           </li>
           <li class="nav-item">
@@ -60,12 +60,6 @@
               <span class="nav-icon">💡</span>
               <span class="nav-label">Project Explainer</span>
               <span class="nav-badge-pill">Guide</span>
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-btn" id="btn-nav-medallion" onclick="navigateTo('view-medallion')">
-              <span class="nav-icon">🏗️</span>
-              <span class="nav-label">Medallion Pipeline</span>
             </button>
           </li>
           <li class="nav-item">
@@ -80,6 +74,10 @@
               <span class="nav-label">Architecture Diagrams</span>
             </button>
           </li>
+        </ul>
+
+        <div class="nav-group-label" style="margin-top: 24px;">ANALYTICS & SYSTEM</div>
+        <ul class="nav-menu">
           <li class="nav-item">
             <button class="nav-btn" id="btn-nav-sql" onclick="navigateTo('view-sql')">
               <span class="nav-icon">⚡</span>
@@ -92,29 +90,18 @@
               <span class="nav-label">ETL Runner & QA</span>
             </button>
           </li>
-        </ul>
-
-        <div class="nav-group-label" style="margin-top: 24px;">SYSTEM & API</div>
-        <ul class="nav-menu">
           <li class="nav-item">
             <a href="/docs" target="_blank" class="nav-btn" id="btn-nav-api-docs">
               <span class="nav-icon">🔌</span>
               <span class="nav-label">Swagger API Docs</span>
-              <span class="nav-badge-pill" style="color: #38bdf8;">8000</span>
+              <span class="nav-badge-pill">8000</span>
             </a>
           </li>
         </ul>
       </nav>
 
-      <!-- Sidebar User Profile & Connection Status -->
+      <!-- Sidebar Footer with Gateway status -->
       <div class="sidebar-footer">
-        <div class="user-profile-card">
-          <div class="user-avatar">HS</div>
-          <div class="user-details">
-            <span class="user-name">Himanshu Sharma</span>
-            <span class="user-role">Lead Data Engineer</span>
-          </div>
-        </div>
         <div class="gateway-status-pill" id="gateway-status-pill" onclick="checkApiGateway()">
           <span class="status-indicator-dot" id="sidebar-status-dot"></span>
           <span id="sidebar-status-text">FastAPI Live (Port 8000)</span>
@@ -126,228 +113,563 @@
          MAIN APPLICATION CONTENT AREA
          ========================================================================= -->
     <main class="main-content" id="app-main">
-      
+
       <!-- Top Action Bar -->
       <header class="top-header-bar">
         <div class="header-breadcrumb">
-          <h1 class="header-page-title" id="current-page-title">Dashboard Overview</h1>
-          <span class="header-page-subtitle" id="current-page-subtitle">Real-time metrics from Gold Mart star schema views</span>
+          <div class="header-crumb-path">
+            <span>Dashboards</span>
+            <span>/</span>
+            <span class="current" id="header-crumb-current">Overview</span>
+          </div>
+          <h1 class="header-page-title" id="current-page-title">Overview</h1>
+          <span class="header-page-subtitle" id="current-page-subtitle" style="display: none;"></span>
         </div>
 
         <div class="header-actions">
+          <button class="header-icon-btn" id="theme-toggle-btn" title="Switch Theme" onclick="toggleThemeMode()">🌙</button>
+          <button class="header-icon-btn" title="Active Cluster" onclick="checkApiGateway()">🌐</button>
           <button class="btn btn-action-outline" id="btn-hdr-sql" onclick="navigateTo('view-sql')">
             <span>⚡ Open SQL Lab</span>
           </button>
-          <button class="btn btn-action-primary" id="btn-hdr-etl" onclick="navigateTo('view-etl'); setTimeout(runPipelineSimulation, 200);">
+          <button class="btn btn-action-primary" id="btn-hdr-etl"
+            onclick="navigateTo('view-etl'); setTimeout(runPipelineSimulation, 200);">
             <span>▶ Run ETL Pipeline</span>
           </button>
         </div>
       </header>
 
-      <!-- VIEW 1: DASHBOARD OVERVIEW -->
+      <!-- VIEW 1: DASHBOARD OVERVIEW (3-Column Executive Layout matching image) -->
       <section class="content-view active" id="view-dashboard">
-        
-        <!-- Filter Controls Toolbar -->
-        <div class="toolbar-banner">
-          <div class="toolbar-title-box">
-            <span class="toolbar-tag">ACTIVE FILTERS</span>
-            <span class="toolbar-info">Interactive aggregation across dim_customers, dim_products & fact_sales</span>
-          </div>
-          <div class="toolbar-inputs">
-            <div class="select-wrapper">
-              <label for="filter-country">Market:</label>
-              <select id="filter-country" onchange="applyAnalyticsFilters()">
-                <option value="ALL">All Regions (Global)</option>
-                <option value="United States">United States</option>
-                <option value="Australia">Australia</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="Germany">Germany</option>
-                <option value="France">France</option>
-                <option value="Canada">Canada</option>
-              </select>
-            </div>
-            <div class="select-wrapper">
-              <label for="filter-category">Category:</label>
-              <select id="filter-category" onchange="applyAnalyticsFilters()">
-                <option value="ALL">All Categories</option>
-                <option value="Bikes">Bikes</option>
-                <option value="Components">Components</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Accessories">Accessories</option>
-              </select>
-            </div>
-            <button class="btn btn-refresh-sm" id="btn-refresh-data" onclick="refreshAnalyticsData()">
-              <span>🔄 Refresh</span>
-            </button>
-          </div>
-        </div>
+        <div class="dashboard-executive-layout">
 
-        <!-- KPI 4-Card Row with Mini Sparklines (Inspired by Image 3) -->
-        <div class="kpi-banner-grid">
-          <div class="kpi-widget-card" id="widget-kpi-revenue">
-            <div class="kpi-widget-header">
-              <span class="kpi-widget-label">Total Gross Revenue</span>
-              <span class="kpi-tag-pill green">▲ +24.8%</span>
-            </div>
-            <div class="kpi-widget-main">
-              <div class="kpi-widget-val" id="val-revenue">$29,355,502</div>
-              <!-- Mini Bar Graphic -->
-              <div class="mini-bar-chart">
-                <span style="height: 35%;"></span>
-                <span style="height: 50%;"></span>
-                <span style="height: 45%;"></span>
-                <span style="height: 75%;"></span>
-                <span style="height: 90%;"></span>
-                <span style="height: 100%;"></span>
+          <!-- LEFT / MAIN COLUMN -->
+          <div class="dashboard-main-col">
+
+            <!-- Filter Controls Toolbar -->
+            <div class="toolbar-banner">
+              <div class="toolbar-title-box">
+                <span class="toolbar-tag">ACTIVE FILTERS</span>
+                <span class="toolbar-info">Interactive aggregation across dim_customers, dim_products &
+                  fact_sales</span>
+              </div>
+              <div class="toolbar-inputs">
+                <div class="select-wrapper">
+                  <label for="filter-country">Market:</label>
+                  <select id="filter-country" onchange="applyAnalyticsFilters()">
+                    <option value="ALL">All Regions (Global)</option>
+                    <option value="United States">United States</option>
+                    <option value="Australia">Australia</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Canada">Canada</option>
+                  </select>
+                </div>
+                <div class="select-wrapper">
+                  <label for="filter-category">Category:</label>
+                  <select id="filter-category" onchange="applyAnalyticsFilters()">
+                    <option value="ALL">All Categories</option>
+                    <option value="Bikes">Bikes</option>
+                    <option value="Components">Components</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Accessories">Accessories</option>
+                  </select>
+                </div>
+                <button class="btn-refresh-sm" id="btn-refresh-data" onclick="refreshAnalyticsData()">
+                  <span>🔄 Refresh</span>
+                </button>
               </div>
             </div>
-            <span class="kpi-widget-sub">60,398 CRM order transactions</span>
-          </div>
 
-          <div class="kpi-widget-card" id="widget-kpi-orders">
-            <div class="kpi-widget-header">
-              <span class="kpi-widget-label">Completed Orders</span>
-              <span class="kpi-tag-pill blue">▲ +18.2%</span>
-            </div>
-            <div class="kpi-widget-main">
-              <div class="kpi-widget-val" id="val-orders">27,659</div>
-              <!-- Mini Bar Graphic -->
-              <div class="mini-bar-chart">
-                <span style="height: 40%;"></span>
-                <span style="height: 60%;"></span>
-                <span style="height: 55%;"></span>
-                <span style="height: 70%;"></span>
-                <span style="height: 85%;"></span>
-                <span style="height: 95%;"></span>
+            <!-- Row 1: 4 KPI Cards (Matches image: Net Revenue, ARR, Goal 71%, New Orders) -->
+            <div class="kpi-banner-grid">
+              <!-- KPI 1: Net Revenue -->
+              <div class="kpi-widget-card" id="widget-kpi-revenue">
+                <div class="kpi-widget-header">
+                  <span class="kpi-widget-label">Net revenue</span>
+                </div>
+                <div class="kpi-widget-main">
+                  <div class="kpi-widget-val" id="val-revenue">$3,131,021</div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span class="kpi-tag-pill green" id="val-revenue-sub">↗ 0.4% vs last month</span>
+                  <div class="mini-bar-chart">
+                    <span style="height: 35%;"></span>
+                    <span style="height: 50%;"></span>
+                    <span style="height: 45%;"></span>
+                    <span style="height: 75%;"></span>
+                    <span style="height: 90%;"></span>
+                    <span style="height: 100%;"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- KPI 2: ARR -->
+              <div class="kpi-widget-card" id="widget-kpi-arr">
+                <div class="kpi-widget-header">
+                  <span class="kpi-widget-label">ARR</span>
+                </div>
+                <div class="kpi-widget-main">
+                  <div class="kpi-widget-val" id="val-arr">$1,511,121</div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span class="kpi-tag-pill green">↗ 32% vs last quarter</span>
+                  <div class="mini-bar-chart">
+                    <span style="height: 40%;"></span>
+                    <span style="height: 55%;"></span>
+                    <span style="height: 65%;"></span>
+                    <span style="height: 70%;"></span>
+                    <span style="height: 85%;"></span>
+                    <span style="height: 100%;"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- KPI 3: Quarterly revenue goal (71% with Neon Gauge Arc) -->
+              <div class="kpi-widget-card" id="widget-kpi-goal">
+                <div class="kpi-widget-header">
+                  <span class="kpi-widget-label">Quarterly revenue goal</span>
+                </div>
+                <div class="kpi-widget-main">
+                  <div>
+                    <div class="kpi-widget-val" id="val-goal">71%</div>
+                    <span class="kpi-widget-sub" style="font-size: 0.72rem; color: var(--text-muted);">Goal:
+                      $1.1M</span>
+                  </div>
+                  <!-- SVG Gauge Semi-Circle in Neon Lime (Exact match to image!) -->
+                  <div class="kpi-gauge-wrap">
+                    <svg viewBox="0 0 100 55" class="kpi-gauge-svg">
+                      <path d="M 12 50 A 38 38 0 0 1 88 50" fill="none" stroke="#222832" stroke-width="8"
+                        stroke-linecap="round" />
+                      <path d="M 12 50 A 38 38 0 0 1 74 20" fill="none" stroke="#bef264" stroke-width="8"
+                        stroke-linecap="round" />
+                    </svg>
+                  </div>
+                </div>
+                <span class="kpi-tag-pill green">On Track · Gold Mart</span>
+              </div>
+
+              <!-- KPI 4: New orders -->
+              <div class="kpi-widget-card" id="widget-kpi-orders">
+                <div class="kpi-widget-header">
+                  <span class="kpi-widget-label">New orders</span>
+                </div>
+                <div class="kpi-widget-main">
+                  <div class="kpi-widget-val" id="val-orders">18,221</div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span class="kpi-tag-pill green" id="val-orders-sub">↗ 11% vs last quarter</span>
+                  <div class="mini-bar-chart">
+                    <span style="height: 50%;"></span>
+                    <span style="height: 60%;"></span>
+                    <span style="height: 75%;"></span>
+                    <span style="height: 70%;"></span>
+                    <span style="height: 90%;"></span>
+                    <span style="height: 100%;"></span>
+                  </div>
+                </div>
               </div>
             </div>
-            <span class="kpi-widget-sub">60,423 line items delivered</span>
-          </div>
 
-          <div class="kpi-widget-card" id="widget-kpi-aov">
-            <div class="kpi-widget-header">
-              <span class="kpi-widget-label">Average Order Value (AOV)</span>
-              <span class="kpi-tag-pill green">▲ +5.6%</span>
-            </div>
-            <div class="kpi-widget-main">
-              <div class="kpi-widget-val" id="val-aov">$1,061.34</div>
-              <!-- Mini Bar Graphic -->
-              <div class="mini-bar-chart">
-                <span style="height: 60%;"></span>
-                <span style="height: 65%;"></span>
-                <span style="height: 70%;"></span>
-                <span style="height: 68%;"></span>
-                <span style="height: 80%;"></span>
-                <span style="height: 85%;"></span>
+            <!-- Row 2: Sales Overview + Profit Evolution (Exact match to image row 2!) -->
+            <div class="sales-profit-row">
+              <!-- Sales Overview Card (Donut Chart + Category Breakdown) -->
+              <div class="dashboard-panel-card" id="card-sales-overview">
+                <div class="panel-card-header">
+                  <div>
+                    <h3 class="panel-title">Sales Overview</h3>
+                  </div>
+                  <button class="card-more-btn">⋮</button>
+                </div>
+                <div class="sales-overview-body">
+                  <!-- 2-Tone Green Donut Chart -->
+                  <div class="donut-chart-container">
+                    <svg class="donut-svg" viewBox="0 0 160 160">
+                      <!-- Background Forest Ring -->
+                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#233a27" stroke-width="22" />
+                      <!-- Active Neon Lime Segment (68% of circumference = 256 of 377) -->
+                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#bef264" stroke-width="22"
+                        stroke-dasharray="256 377" stroke-linecap="round" />
+                    </svg>
+                    <div class="donut-center-text">
+                      <div class="donut-center-val" id="donut-center-num">102k</div>
+                      <div class="donut-center-sub">Weekly Visits</div>
+                    </div>
+                  </div>
+
+                  <!-- Right Stats & Legend Breakdown -->
+                  <div class="sales-breakdown-col">
+                    <div class="sales-summary-stat">
+                      <div class="stat-icon-circle">$</div>
+                      <div class="stat-info-text">
+                        <span class="stat-label-tiny">Number of Sales</span>
+                        <span class="stat-value-big" id="val-num-sales">$71,020</span>
+                      </div>
+                    </div>
+
+                    <div class="categories-grid-legend">
+                      <div class="legend-item">
+                        <div class="legend-label-row">
+                          <span class="legend-dot" style="background: #bef264;"></span>
+                          <span>Electronic</span>
+                        </div>
+                        <span class="legend-val">$55,640</span>
+                      </div>
+                      <div class="legend-item">
+                        <div class="legend-label-row">
+                          <span class="legend-dot" style="background: #10b981;"></span>
+                          <span>Furniture</span>
+                        </div>
+                        <span class="legend-val">$11,420</span>
+                      </div>
+                      <div class="legend-item">
+                        <div class="legend-label-row">
+                          <span class="legend-dot" style="background: #34d399;"></span>
+                          <span>Clothes</span>
+                        </div>
+                        <span class="legend-val">$1,840</span>
+                      </div>
+                      <div class="legend-item">
+                        <div class="legend-label-row">
+                          <span class="legend-dot" style="background: #fbbf24;"></span>
+                          <span>Shoes</span>
+                        </div>
+                        <span class="legend-val">$2,120</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Profit Evolution Column (2 Mini Cards + Glowing Green Line Chart) -->
+              <div class="profit-column-cards">
+                <div class="mini-stat-cards-row">
+                  <div class="mini-quick-card">
+                    <div class="mini-card-icon-tag">👥</div>
+                    <span class="mini-card-title">New customers:</span>
+                    <div class="mini-card-val-row">
+                      <span class="mini-card-val">862</span>
+                      <span class="mini-card-sub" style="color: #f87171;">-8%</span>
+                    </div>
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Last Week</span>
+                  </div>
+
+                  <div class="mini-quick-card">
+                    <div class="mini-card-icon-tag">📈</div>
+                    <span class="mini-card-title">Total profit:</span>
+                    <div class="mini-card-val-row">
+                      <span class="mini-card-val">$25.6k</span>
+                      <span class="mini-card-sub">+42%</span>
+                    </div>
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Weekly Profit</span>
+                  </div>
+                </div>
+
+                <!-- Total Profit Card with Glowing Green Line Chart -->
+                <div class="total-profit-chart-card">
+                  <div class="profit-chart-header">
+                    <span class="profit-header-label">Total Profit:</span>
+                    <span class="profit-header-val" id="val-total-profit">$136,755.77</span>
+                  </div>
+                  <div class="profit-svg-container">
+                    <svg viewBox="0 0 320 80" style="width: 100%; height: 100%;">
+                      <defs>
+                        <linearGradient id="profitGlowGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#10b981" stop-opacity="0.35" />
+                          <stop offset="100%" stop-color="#10b981" stop-opacity="0.0" />
+                        </linearGradient>
+                      </defs>
+                      <!-- Gradient Area -->
+                      <path d="M 0 65 Q 40 70 80 50 T 160 35 T 240 45 T 320 15 L 320 80 L 0 80 Z"
+                        fill="url(#profitGlowGradient)" />
+                      <!-- Glowing Stroke -->
+                      <path d="M 0 65 Q 40 70 80 50 T 160 35 T 240 45 T 320 15" fill="none" stroke="#10b981"
+                        stroke-width="2.5" stroke-linecap="round" />
+                      <!-- Glowing Peak Dot -->
+                      <circle cx="320" cy="15" r="4" fill="#bef264" style="filter: drop-shadow(0 0 6px #bef264);" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
-            <span class="kpi-widget-sub">Basket size optimization</span>
-          </div>
 
-          <div class="kpi-widget-card" id="widget-kpi-customers">
-            <div class="kpi-widget-header">
-              <span class="kpi-widget-label">Conformed Customers</span>
-              <span class="kpi-tag-pill gold">100% Match</span>
-            </div>
-            <div class="kpi-widget-main">
-              <div class="kpi-widget-val" id="val-customers">18,484</div>
-              <!-- Mini Bar Graphic -->
-              <div class="mini-bar-chart">
-                <span style="height: 50%;"></span>
-                <span style="height: 60%;"></span>
-                <span style="height: 75%;"></span>
-                <span style="height: 85%;"></span>
-                <span style="height: 90%;"></span>
-                <span style="height: 100%;"></span>
+            <!-- Row 3: Customer List Table + Premium Plan Promo Card -->
+            <div class="bottom-dashboard-row">
+              <!-- Customer List Table (Danny Liu, Bella Deviant, Darrell Steward) -->
+              <div class="dashboard-panel-card">
+                <div class="panel-card-header">
+                  <div>
+                    <h3 class="panel-title">Customer list</h3>
+                  </div>
+                  <button class="card-more-btn">⋮</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="customer-table">
+                    <thead>
+                      <tr>
+                        <th>Name ⇅</th>
+                        <th>Deals ⇅</th>
+                        <th>Total Deal Value ⇅</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-customer-list">
+                      <tr>
+                        <td>
+                          <div class="cust-name-cell">
+                            <div class="cust-avatar-circle"
+                              style="background: linear-gradient(135deg, #f43f5e, #fb7185);">DL</div>
+                            <div class="cust-details-box">
+                              <span class="cust-name-text">Danny Liu</span>
+                              <span class="cust-email-text">danny@gmail.com</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="deals-val">1,023</td>
+                        <td class="total-deal-val">$37,431</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="cust-name-cell">
+                            <div class="cust-avatar-circle"
+                              style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">BD</div>
+                            <div class="cust-details-box">
+                              <span class="cust-name-text">Bella Deviant</span>
+                              <span class="cust-email-text">bella@gmail.com</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="deals-val">963</td>
+                        <td class="total-deal-val">$30,423</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="cust-name-cell">
+                            <div class="cust-avatar-circle"
+                              style="background: linear-gradient(135deg, #10b981, #34d399);">DS</div>
+                            <div class="cust-details-box">
+                              <span class="cust-name-text">Darrell Steward</span>
+                              <span class="cust-email-text">darrell@gmail.com</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="deals-val">843</td>
+                        <td class="total-deal-val">$28,549</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Premium Plans / Production Engine Promo Card (Exact match to image bottom right!) -->
+              <div class="promo-gradient-card">
+                <div>
+                  <div class="promo-badge-pill">
+                    <span>⚡ Premium Plans</span>
+                  </div>
+                  <div class="promo-price-wrap">
+                    <span class="promo-price-val">$30</span>
+                    <span class="promo-price-sub">Per Month<br>Per User</span>
+                  </div>
+                  <p class="promo-desc">
+                    Improve your workplace, view and analyze your analytical profits and losses in real time.
+                  </p>
+                </div>
+                <div class="promo-action-row">
+                  <button class="btn-get-started" onclick="navigateTo('view-sql')">Get Started</button>
+                  <button class="btn-icon-star" onclick="navigateTo('view-etl')" title="Orchestrate Pipeline">★</button>
+                </div>
               </div>
             </div>
-            <span class="kpi-widget-sub">CRM + ERP demographics joined</span>
-          </div>
-        </div>
 
-        <!-- Middle Row: Revenue Timeline Chart & Category Share -->
-        <div class="dashboard-charts-row">
-          <!-- Timeline SVG Chart -->
-          <div class="dashboard-panel-card chart-panel-large">
-            <div class="panel-card-header">
-              <div>
-                <h3 class="panel-title">Monthly Revenue Evolution</h3>
-                <span class="panel-subtitle">Historical sales performance from gold.fact_sales</span>
+            <!-- Additional Warehouse Mart Analytics: Monthly Timeline Chart -->
+            <div class="dashboard-panel-card" style="margin-top: 10px;">
+              <div class="panel-card-header">
+                <div>
+                  <h3 class="panel-title">Monthly Revenue Evolution (Gold Star Schema)</h3>
+                  <span class="panel-subtitle">Historical sales performance from gold.fact_sales</span>
+                </div>
+                <span class="nav-badge-pill">2010 - 2014 Sales</span>
               </div>
-              <span class="pill-badge-outline">2010 - 2014 Sales</span>
-            </div>
-            <div class="svg-chart-container" id="monthly-chart-container">
-              <svg class="interactive-svg-chart" id="monthly-svg-chart" viewBox="0 0 760 250" preserveAspectRatio="none"></svg>
-              <div class="chart-tooltip" id="chart-tooltip"></div>
-            </div>
-          </div>
-
-          <!-- Product Category Share -->
-          <div class="dashboard-panel-card chart-panel-small">
-            <div class="panel-card-header">
-              <div>
-                <h3 class="panel-title">Revenue by Category</h3>
-                <span class="panel-subtitle">Product taxonomy performance</span>
+              <div class="svg-chart-container" id="monthly-chart-container" style="height: 200px;">
+                <svg class="interactive-svg-chart" id="monthly-svg-chart" viewBox="0 0 760 200"
+                  preserveAspectRatio="none"></svg>
+                <div class="chart-tooltip" id="chart-tooltip"></div>
               </div>
             </div>
-            <div class="category-list" id="category-metric-list">
-              <!-- Populated by app.js -->
-            </div>
-          </div>
-        </div>
 
-        <!-- Bottom Row: Regional Performance Table (Inspired by Image 3) & Top Products -->
-        <div class="dashboard-tables-row">
-          <!-- Regional Market Table -->
-          <div class="dashboard-panel-card">
-            <div class="panel-card-header">
-              <div>
-                <h3 class="panel-title">Sales Performance by Region</h3>
-                <span class="panel-subtitle">Standardized geographic markets from gold.dim_customers</span>
+            <!-- Regional Market & Top SKUs Tables -->
+            <div class="dashboard-tables-row" style="margin-top: 10px;">
+              <div class="dashboard-panel-card">
+                <div class="panel-card-header">
+                  <div>
+                    <h3 class="panel-title">Sales by Region</h3>
+                    <span class="panel-subtitle">Standardized geographic markets from gold.dim_customers</span>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="saas-table" id="table-regions">
+                    <thead>
+                      <tr>
+                        <th>Region</th>
+                        <th>Customers</th>
+                        <th>Orders</th>
+                        <th>Market Share</th>
+                        <th>Gross Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-regional-sales"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="dashboard-panel-card">
+                <div class="panel-card-header">
+                  <div>
+                    <h3 class="panel-title">Top 10 Product SKUs</h3>
+                    <span class="panel-subtitle">Highest grossing catalog models</span>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="saas-table" id="table-top-products">
+                    <thead>
+                      <tr>
+                        <th>Rank</th>
+                        <th>Product Model & SKU</th>
+                        <th>Units</th>
+                        <th>Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-top-products"></tbody>
+                  </table>
+                </div>
               </div>
             </div>
-            <div class="table-responsive">
-              <table class="saas-table" id="table-regions">
-                <thead>
-                  <tr>
-                    <th>Region</th>
-                    <th>Customers</th>
-                    <th>Orders</th>
-                    <th>Market Share</th>
-                    <th>Gross Revenue</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-regional-sales">
-                  <!-- Populated by app.js -->
-                </tbody>
-              </table>
-            </div>
+
           </div>
 
-          <!-- Top Products Table -->
-          <div class="dashboard-panel-card">
-            <div class="panel-card-header">
-              <div>
-                <h3 class="panel-title">Top 10 Product SKUs</h3>
-                <span class="panel-subtitle">Highest grossing catalog models</span>
+          <!-- RIGHT RAIL: NOTIFICATIONS, ACTIVITIES & MANAGER CONTACTS (Exact image match!) -->
+          <div class="dashboard-right-rail">
+
+            <!-- Notifications Card -->
+            <div class="dashboard-panel-card">
+              <div class="panel-card-header" style="margin-bottom: 12px;">
+                <h4 class="rail-section-title">Notifications</h4>
+              </div>
+              <div class="rail-feed-list">
+                <div class="rail-item">
+                  <div class="rail-item-icon">👤</div>
+                  <div class="rail-item-content">
+                    <span class="rail-item-text"><strong style="color: #fff;">56 New users</strong> registered.</span>
+                    <span class="rail-item-time">Just now</span>
+                  </div>
+                </div>
+                <div class="rail-item">
+                  <div class="rail-item-icon">📦</div>
+                  <div class="rail-item-content">
+                    <span class="rail-item-text"><strong style="color: #fff;">132 Orders</strong> placed.</span>
+                    <span class="rail-item-time">59 Minutes ago</span>
+                  </div>
+                </div>
+                <div class="rail-item">
+                  <div class="rail-item-icon">💰</div>
+                  <div class="rail-item-content">
+                    <span class="rail-item-text">Funds have been withdrawn.</span>
+                    <span class="rail-item-time">12 Hours ago</span>
+                  </div>
+                </div>
+                <div class="rail-item">
+                  <div class="rail-item-icon">💬</div>
+                  <div class="rail-item-content">
+                    <span class="rail-item-text"><strong style="color: #fff;">5 Unread</strong> messages.</span>
+                    <span class="rail-item-time">Today, 11:59 PM</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="table-responsive">
-              <table class="saas-table" id="table-top-products">
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Product Model & SKU</th>
-                    <th>Category</th>
-                    <th>Units Sold</th>
-                    <th>Revenue</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-top-products">
-                  <!-- Populated by app.js -->
-                </tbody>
-              </table>
+
+            <!-- Activities Card -->
+            <div class="dashboard-panel-card">
+              <div class="panel-card-header" style="margin-bottom: 12px;">
+                <h4 class="rail-section-title">Activities</h4>
+              </div>
+              <div class="rail-feed-list">
+                <div class="rail-item">
+                  <div class="rail-item-icon user" style="background: #3b82f6;">🎨</div>
+                  <div class="rail-item-content">
+                    <span class="rail-item-text">Changed the style.</span>
+                    <span class="rail-item-time">Just now</span>
+                  </div>
+                </div>
+                <div class="rail-item">
+                  <div class="rail-item-icon user" style="background: #ec4899;">🏷️</div>
+                  <div class="rail-item-content">
+                    <span class="rail-item-text"><strong style="color: #fff;">177 New products</strong> added.</span>
+                    <span class="rail-item-time">47 Minutes ago</span>
+                  </div>
+                </div>
+                <div class="rail-item">
+                  <div class="rail-item-icon user" style="background: #8b5cf6;">📁</div>
+                  <div class="rail-item-content">
+                    <span class="rail-item-text">11 Products have been archived.</span>
+                    <span class="rail-item-time">1 Days ago</span>
+                  </div>
+                </div>
+                <div class="rail-item">
+                  <div class="rail-item-icon user" style="background: #f97316;">🗑️</div>
+                  <div class="rail-item-content">
+                    <span class="rail-item-text">Page "Toys" has been removed.</span>
+                    <span class="rail-item-time">Feb 2, 2024</span>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            <!-- Contacts of your managers (Highlighted "Nataniel Donowan" in Neon Lime!) -->
+            <div class="dashboard-panel-card">
+              <div class="panel-card-header" style="margin-bottom: 12px;">
+                <h4 class="rail-section-title">Contacts of your managers</h4>
+              </div>
+              <div class="contacts-list">
+                <div class="contact-row">
+                  <div class="contact-info-wrap">
+                    <div class="contact-avatar" style="background: #475569;">DC</div>
+                    <span class="contact-name">Daniel Craig</span>
+                  </div>
+                  <span style="color: var(--text-muted); font-size: 0.8rem;">⋯</span>
+                </div>
+                <div class="contact-row">
+                  <div class="contact-info-wrap">
+                    <div class="contact-avatar" style="background: #d97706;">KM</div>
+                    <span class="contact-name">Kate Morrison</span>
+                  </div>
+                  <span style="color: var(--text-muted); font-size: 0.8rem;">⋯</span>
+                </div>
+                <!-- ACTIVE GLOWING ROW (Exact match to image!) -->
+                <div class="contact-row active-neon">
+                  <div class="contact-info-wrap">
+                    <div class="contact-avatar" style="background: #10b981; color: #091106; font-weight: 800;">ND</div>
+                    <span class="contact-name">Nataniel Donowan</span>
+                  </div>
+                  <div class="contact-phone-pill">📞</div>
+                </div>
+                <div class="contact-row">
+                  <div class="contact-info-wrap">
+                    <div class="contact-avatar" style="background: #2563eb;">EW</div>
+                    <span class="contact-name">Elisabeth Wayne</span>
+                  </div>
+                  <span style="color: var(--text-muted); font-size: 0.8rem;">⋯</span>
+                </div>
+                <div class="contact-row">
+                  <div class="contact-info-wrap">
+                    <div class="contact-avatar" style="background: #db2777;">FR</div>
+                    <span class="contact-name">Felicia Raspet</span>
+                  </div>
+                  <span style="color: var(--text-muted); font-size: 0.8rem;">⋯</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
@@ -359,7 +681,8 @@
             <span class="badge-accent">PROJECT KNOWLEDGE BASE</span>
             <h2 class="explainer-title">How This Enterprise Data Warehouse Works</h2>
             <p class="explainer-lead">
-              A straightforward guide to understanding how this project solves real enterprise data problems using Microsoft SQL Server and the Medallion Architecture.
+              A straightforward guide to understanding how this project solves real enterprise data problems using
+              Microsoft SQL Server and the Medallion Architecture.
             </p>
           </div>
         </div>
@@ -370,7 +693,9 @@
             <div class="explainer-icon-box" style="color: #f87171;">⚠️</div>
             <h3 class="explainer-card-title">1. The Real-World Problem</h3>
             <p class="explainer-card-desc">
-              Companies don't store all their data in one place. Sales live in the <strong>CRM</strong> system, while logistics and birthdays live in the <strong>ERP</strong> system. Data formats don't match, customer records have duplicates, and values like countries are typed differently (`USA`, `US`, `United States`).
+              Companies don't store all their data in one place. Sales live in the <strong>CRM</strong> system, while
+              logistics and birthdays live in the <strong>ERP</strong> system. Data formats don't match, customer
+              records have duplicates, and values like countries are typed differently (`USA`, `US`, `United States`).
             </p>
           </div>
 
@@ -390,7 +715,8 @@
             <div class="explainer-icon-box" style="color: #34d399;">🚀</div>
             <h3 class="explainer-card-title">3. Why This Matters</h3>
             <p class="explainer-card-desc">
-              Executives can ask questions like <em>"Which country brings the highest profit?"</em> and get answers in milliseconds without freezing the operational database or calculating complex joins every single time.
+              Executives can ask questions like <em>"Which country brings the highest profit?"</em> and get answers in
+              milliseconds without freezing the operational database or calculating complex joins every single time.
             </p>
           </div>
         </div>
@@ -400,7 +726,8 @@
           <div class="panel-card-header">
             <div>
               <h3 class="panel-title">Interactive Data Journey: Trace A Customer Record</h3>
-              <span class="panel-subtitle">Click through the 4 stages to see how a single dirty customer record transforms into clean analytical gold</span>
+              <span class="panel-subtitle">Click through the 4 stages to see how a single dirty customer record
+                transforms into clean analytical gold</span>
             </div>
           </div>
 
@@ -439,12 +766,15 @@
             </div>
             <h3 class="tier-title">Immutable Landing Tables</h3>
             <p class="tier-text">
-              Direct high-speed ingestion of external CRM and ERP CSV files using T-SQL <code>BULK INSERT</code> with <code>TABLOCK</code> optimization for minimal transaction logging.
+              Direct high-speed ingestion of external CRM and ERP CSV files using T-SQL <code>BULK INSERT</code> with
+              <code>TABLOCK</code> optimization for minimal transaction logging.
             </p>
             <ul class="tier-bullets">
               <li><strong>Zero Mutation:</strong> Preserves raw data exactly as delivered.</li>
               <li><strong>Audit Reservoir:</strong> Full traceability back to original flat files.</li>
-              <li><strong>Tables:</strong> <code>crm_cust_info</code>, <code>crm_prd_info</code>, <code>crm_sales_details</code>, <code>erp_CUST_AZ12</code>, <code>erp_LOC_A101</code>, <code>erp_PX_CAT_G1V2</code>.</li>
+              <li><strong>Tables:</strong> <code>crm_cust_info</code>, <code>crm_prd_info</code>,
+                <code>crm_sales_details</code>, <code>erp_CUST_AZ12</code>, <code>erp_LOC_A101</code>,
+                <code>erp_PX_CAT_G1V2</code>.</li>
             </ul>
           </div>
 
@@ -455,12 +785,16 @@
             </div>
             <h3 class="tier-title">Conformance & SCD2 Historization</h3>
             <p class="tier-text">
-              Executes data cleansing, deduplication, composite key splitting, and Slowly Changing Dimension (SCD Type 2) tracking via <code>silver.load_silver</code>.
+              Executes data cleansing, deduplication, composite key splitting, and Slowly Changing Dimension (SCD Type
+              2) tracking via <code>silver.load_silver</code>.
             </p>
             <ul class="tier-bullets">
-              <li><strong>Deduplication:</strong> <code>ROW_NUMBER() OVER (PARTITION BY cst_id ORDER BY cst_create_date DESC)</code>.</li>
-              <li><strong>SCD2 Tracking:</strong> Uses <code>LEAD(prd_start_dt) OVER (...) - 1</code> for active product validity dates.</li>
-              <li><strong>Normalization:</strong> Strips legacy prefixes (e.g. <code>NAS</code>) and standardizes countries.</li>
+              <li><strong>Deduplication:</strong>
+                <code>ROW_NUMBER() OVER (PARTITION BY cst_id ORDER BY cst_create_date DESC)</code>.</li>
+              <li><strong>SCD2 Tracking:</strong> Uses <code>LEAD(prd_start_dt) OVER (...) - 1</code> for active product
+                validity dates.</li>
+              <li><strong>Normalization:</strong> Strips legacy prefixes (e.g. <code>NAS</code>) and standardizes
+                countries.</li>
             </ul>
           </div>
 
@@ -471,7 +805,8 @@
             </div>
             <h3 class="tier-title">Analytical Star Schema Views</h3>
             <p class="tier-text">
-              High-performance dimensional views engineered for executive business intelligence and consumed securely by the FastAPI microservice.
+              High-performance dimensional views engineered for executive business intelligence and consumed securely by
+              the FastAPI microservice.
             </p>
             <ul class="tier-bullets">
               <li><strong>Dimensions:</strong> <code>gold.dim_customers</code>, <code>gold.dim_products</code>.</li>
@@ -486,12 +821,15 @@
           <div class="panel-card-header">
             <div>
               <h3 class="panel-title">T-SQL Data Cleansing In Action</h3>
-              <span class="panel-subtitle">Select an ETL transformation to view raw Bronze input vs cleansed Silver output</span>
+              <span class="panel-subtitle">Select an ETL transformation to view raw Bronze input vs cleansed Silver
+                output</span>
             </div>
             <div class="btn-group-pill">
-              <button class="pill-btn active" id="btn-diff-customers" onclick="switchDiffView('customers')">Customer Deduplication</button>
+              <button class="pill-btn active" id="btn-diff-customers" onclick="switchDiffView('customers')">Customer
+                Deduplication</button>
               <button class="pill-btn" id="btn-diff-products" onclick="switchDiffView('products')">Product SCD2</button>
-              <button class="pill-btn" id="btn-diff-locations" onclick="switchDiffView('locations')">Country Standardization</button>
+              <button class="pill-btn" id="btn-diff-locations" onclick="switchDiffView('locations')">Country
+                Standardization</button>
             </div>
           </div>
           <div class="diff-grid-view" id="diff-content-grid">
@@ -506,7 +844,8 @@
           <!-- Table Selector Sidebar -->
           <div class="catalog-nav-card">
             <div class="catalog-nav-title">GOLD SCHEMA TABLES</div>
-            <button class="cat-select-btn active" id="btn-table-customers" onclick="selectCatalogTable('gold.dim_customers')">
+            <button class="cat-select-btn active" id="btn-table-customers"
+              onclick="selectCatalogTable('gold.dim_customers')">
               <div class="cat-btn-name">gold.dim_customers</div>
               <div class="cat-btn-sub">Dimension · 10 Columns · 18,484 Records</div>
             </button>
@@ -525,10 +864,12 @@
             <div class="catalog-header-box">
               <div>
                 <h2 class="catalog-active-name" id="selected-table-name">gold.dim_customers</h2>
-                <p class="catalog-active-purpose" id="selected-table-purpose">Stores customer details enriched with demographic and geographic data.</p>
+                <p class="catalog-active-purpose" id="selected-table-purpose">Stores customer details enriched with
+                  demographic and geographic data.</p>
               </div>
               <div class="table-search-box">
-                <input type="text" id="catalog-search-input" placeholder="Filter columns or records..." oninput="filterCatalogContent(this.value)">
+                <input type="text" id="catalog-search-input" placeholder="Filter columns or records..."
+                  oninput="filterCatalogContent(this.value)">
               </div>
             </div>
 
@@ -578,63 +919,74 @@
         <div class="toolbar-banner" style="margin-bottom: 24px;">
           <div>
             <span class="toolbar-tag">SYSTEM BLUEPRINTS</span>
-            <span class="toolbar-info">Interactive architectural diagrams detailing data flows, integration schemas, and star schema relationships</span>
+            <span class="toolbar-info">Interactive architectural diagrams detailing data flows, integration schemas, and
+              star schema relationships</span>
           </div>
         </div>
 
         <div class="diagrams-grid">
-          <div class="blueprint-card" onclick="openDiagramLightbox('assets/images/data_architecture.png', 'End-to-End Enterprise Data Architecture')">
+          <div class="blueprint-card"
+            onclick="openDiagramLightbox('assets/images/data_architecture.png', 'End-to-End Enterprise Data Architecture')">
             <div class="blueprint-preview-box">
               <img src="assets/images/data_architecture.png" alt="Data Architecture Blueprint" class="blueprint-img">
               <span class="zoom-badge">🔍 Click to Expand</span>
             </div>
             <div class="blueprint-info">
               <h3 class="blueprint-title">End-to-End Data Architecture</h3>
-              <p class="blueprint-desc">Comprehensive system lifecycle: CRM & ERP extraction into Bronze, transformation in Silver, Star Schema views in Gold, and FastAPI JSON delivery.</p>
+              <p class="blueprint-desc">Comprehensive system lifecycle: CRM & ERP extraction into Bronze, transformation
+                in Silver, Star Schema views in Gold, and FastAPI JSON delivery.</p>
             </div>
           </div>
 
-          <div class="blueprint-card" onclick="openDiagramLightbox('assets/images/data_flow.png', 'Data Flow Pipeline')">
+          <div class="blueprint-card"
+            onclick="openDiagramLightbox('assets/images/data_flow.png', 'Data Flow Pipeline')">
             <div class="blueprint-preview-box">
               <img src="assets/images/data_flow.png" alt="Data Flow Pipeline" class="blueprint-img">
               <span class="zoom-badge">🔍 Click to Expand</span>
             </div>
             <div class="blueprint-info">
               <h3 class="blueprint-title">Data Flow Pipeline</h3>
-              <p class="blueprint-desc">Visual trace of entity transitions from raw CSV flat files through stored procedures into validated star schema dimensions and facts.</p>
+              <p class="blueprint-desc">Visual trace of entity transitions from raw CSV flat files through stored
+                procedures into validated star schema dimensions and facts.</p>
             </div>
           </div>
 
-          <div class="blueprint-card" onclick="openDiagramLightbox('assets/images/data_integration.png', 'Cross-System Data Integration')">
+          <div class="blueprint-card"
+            onclick="openDiagramLightbox('assets/images/data_integration.png', 'Cross-System Data Integration')">
             <div class="blueprint-preview-box">
               <img src="assets/images/data_integration.png" alt="Data Integration" class="blueprint-img">
               <span class="zoom-badge">🔍 Click to Expand</span>
             </div>
             <div class="blueprint-info">
               <h3 class="blueprint-title">Cross-System Integration</h3>
-              <p class="blueprint-desc">Entity reconciliation mapping CRM customer records with ERP demographics (CUST_AZ12) and locations (LOC_A101).</p>
+              <p class="blueprint-desc">Entity reconciliation mapping CRM customer records with ERP demographics
+                (CUST_AZ12) and locations (LOC_A101).</p>
             </div>
           </div>
 
-          <div class="blueprint-card" onclick="openDiagramLightbox('assets/images/data_model.png', 'Gold Layer Star Schema Data Model')">
+          <div class="blueprint-card"
+            onclick="openDiagramLightbox('assets/images/data_model.png', 'Gold Layer Star Schema Data Model')">
             <div class="blueprint-preview-box">
               <img src="assets/images/data_model.png" alt="Data Model" class="blueprint-img">
               <span class="zoom-badge">🔍 Click to Expand</span>
             </div>
             <div class="blueprint-info">
               <h3 class="blueprint-title">Star Schema Data Model</h3>
-              <p class="blueprint-desc">Dimensional entity model showing gold.fact_sales linked via surrogate keys (*_key) to dim_customers and dim_products.</p>
+              <p class="blueprint-desc">Dimensional entity model showing gold.fact_sales linked via surrogate keys
+                (*_key) to dim_customers and dim_products.</p>
             </div>
           </div>
 
-          <div class="blueprint-card" onclick="openDiagramLightbox('assets/images/ETL.png', 'ETL Pipeline Orchestration')">
+          <div class="blueprint-card"
+            onclick="openDiagramLightbox('assets/images/ETL.png', 'ETL Pipeline Orchestration')">
             <div class="blueprint-preview-box">
               <img src="assets/images/ETL.png" alt="ETL Pipeline" class="blueprint-img">
               <span class="zoom-badge">🔍 Click to Expand</span>
             </div>
             <div class="blueprint-info">
               <h3 class="blueprint-title">ETL Pipeline Orchestration</h3>
-              <p class="blueprint-desc">Execution architecture demonstrating automated procedure execution, timing measurement, and data quality testing.</p>
+              <p class="blueprint-desc">Execution architecture demonstrating automated procedure execution, timing
+                measurement, and data quality testing.</p>
             </div>
           </div>
         </div>
@@ -673,7 +1025,8 @@
                 <span class="results-meta" id="sql-results-meta">Select a query and click "Execute Query"</span>
               </div>
               <div class="table-responsive" id="sql-results-table-box">
-                <div style="color: #64748b; font-style: italic; padding: 20px;">Execution output will appear here...</div>
+                <div style="color: #64748b; font-style: italic; padding: 20px;">Execution output will appear here...
+                </div>
               </div>
             </div>
           </div>
@@ -701,7 +1054,8 @@
               </select>
             </div>
 
-            <button class="btn btn-action-primary" id="btn-send-api-request" onclick="sendApiRequest()" style="width: 100%; margin: 12px 0;">
+            <button class="btn btn-action-primary" id="btn-send-api-request" onclick="sendApiRequest()"
+              style="width: 100%; margin: 12px 0;">
               <span>🚀 Send REST Request</span>
             </button>
 
@@ -710,7 +1064,8 @@
                 <span>JSON Response Payload</span>
                 <span id="api-timing-tag" style="color: #34d399;">Ready</span>
               </div>
-              <pre class="api-response-pre" id="api-json-pre">// Click "Send REST Request" to inspect JSON payload...</pre>
+              <pre class="api-response-pre"
+                id="api-json-pre">// Click "Send REST Request" to inspect JSON payload...</pre>
             </div>
           </div>
         </div>
@@ -722,7 +1077,8 @@
           <div class="panel-card-header">
             <div>
               <h2 class="panel-title">Automated Python ETL Pipeline Orchestrator</h2>
-              <span class="panel-subtitle">Simulates <code>pipeline/run_pipeline.py</code> execution with data quality assertions</span>
+              <span class="panel-subtitle">Simulates <code>pipeline/run_pipeline.py</code> execution with data quality
+                assertions</span>
             </div>
             <button class="btn btn-action-primary" id="btn-trigger-etl" onclick="runPipelineSimulation()">
               <span>▶ Start Full ETL Pipeline Execution</span>
@@ -734,7 +1090,8 @@
             <div class="stage-card completed" id="stage-card-bronze">
               <div class="stage-status-icon">✓</div>
               <h4 class="stage-name">Stage 1: Bronze Bulk Ingestion</h4>
-              <p class="stage-desc">Runs <code>bronze.load_bronze</code> via T-SQL BULK INSERT across 6 raw CSV files.</p>
+              <p class="stage-desc">Runs <code>bronze.load_bronze</code> via T-SQL BULK INSERT across 6 raw CSV files.
+              </p>
             </div>
 
             <div class="stage-card completed" id="stage-card-silver">
@@ -746,7 +1103,8 @@
             <div class="stage-card completed" id="stage-card-gold">
               <div class="stage-status-icon">✓</div>
               <h4 class="stage-name">Stage 3: Gold Star Schema</h4>
-              <p class="stage-desc">Rebuilds analytical views: <code>dim_customers</code>, <code>dim_products</code>, <code>fact_sales</code>.</p>
+              <p class="stage-desc">Rebuilds analytical views: <code>dim_customers</code>, <code>dim_products</code>,
+                <code>fact_sales</code>.</p>
             </div>
 
             <div class="stage-card completed" id="stage-card-qa">
@@ -787,4 +1145,5 @@
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>

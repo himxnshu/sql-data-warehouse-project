@@ -45,7 +45,6 @@ flowchart TD
 ```
 
 ![Data Flow Pipeline](docs/data_flow.png)
->>>>>>> de5c988 (Refine design: Light mint/sage green background with frosted mirror glass cards, remove LICENSE, and embed visual architecture diagrams in README)
 
 ## 📖 System Overview & Medallion Design
 

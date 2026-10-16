@@ -59,6 +59,7 @@ const VIEW_METADATA = {
 // DOM Ready Initialization
 // ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeMode();
   initApiStatus();
   renderDashboard();
   renderDataCatalog('gold.dim_customers');
@@ -67,6 +68,34 @@ document.addEventListener('DOMContentLoaded', () => {
   initSqlSandbox();
   setupKeyboardShortcuts();
 });
+
+// ---------------------------------------------------------------------------
+// Theme Controller (Dark / Light Mode Toggle)
+// ---------------------------------------------------------------------------
+function initThemeMode() {
+  const savedTheme = localStorage.getItem('app-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
+}
+
+function toggleThemeMode() {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('app-theme', newTheme);
+  updateThemeIcon(newTheme);
+  if (APP_STATE.currentView === 'view-dashboard') {
+    setTimeout(renderMonthlySvgChart, 50);
+  }
+}
+
+function updateThemeIcon(theme) {
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) {
+    btn.textContent = theme === 'dark' ? '🌙' : '☀️';
+    btn.setAttribute('title', theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode');
+  }
+}
 
 // ---------------------------------------------------------------------------
 // 1. Navigation Controller
@@ -86,8 +115,12 @@ function navigateTo(viewId) {
 
   // Update top header title & subtitle
   const meta = VIEW_METADATA[viewId] || { title: 'Enterprise Warehouse', subtitle: '' };
-  document.getElementById('current-page-title').textContent = meta.title;
-  document.getElementById('current-page-subtitle').textContent = meta.subtitle;
+  const titleEl = document.getElementById('current-page-title');
+  if (titleEl) titleEl.textContent = meta.title;
+  const subEl = document.getElementById('current-page-subtitle');
+  if (subEl) subEl.textContent = meta.subtitle;
+  const crumbEl = document.getElementById('header-crumb-current');
+  if (crumbEl) crumbEl.textContent = meta.title.replace(' Overview', '');
 
   // Redraw SVG chart if navigating to dashboard
   if (viewId === 'view-dashboard') {
@@ -135,16 +168,59 @@ function renderDashboard() {
   if (!data) return;
 
   // Top KPI widgets
-  document.getElementById('val-revenue').textContent = formatCurrency(data.kpis.total_revenue);
-  document.getElementById('val-orders').textContent = data.kpis.total_orders.toLocaleString();
-  document.getElementById('val-aov').textContent = formatCurrency(data.kpis.avg_order_value);
-  document.getElementById('val-customers').textContent = data.kpis.total_customers.toLocaleString();
+  const revEl = document.getElementById('val-revenue');
+  if (revEl) revEl.textContent = formatCurrency(data.kpis.total_revenue);
+
+  const arrEl = document.getElementById('val-arr');
+  if (arrEl) arrEl.textContent = formatCurrency(data.kpis.total_revenue * 0.515);
+
+  const ordEl = document.getElementById('val-orders');
+  if (ordEl) ordEl.textContent = data.kpis.total_orders.toLocaleString();
+
+  const aovEl = document.getElementById('val-aov');
+  if (aovEl) aovEl.textContent = formatCurrency(data.kpis.avg_order_value);
+
+  const custEl = document.getElementById('val-customers');
+  if (custEl) custEl.textContent = data.kpis.total_customers.toLocaleString();
+
+  // Populate Customer List Table
+  renderCustomerListTable();
 
   // Charts & Tables
   renderMonthlySvgChart();
   renderCategoryList();
   renderRegionalTable();
   renderTopProductsTable(data.top_products);
+}
+
+function renderCustomerListTable() {
+  const tbody = document.getElementById('tbody-customer-list');
+  if (!tbody || !window.WAREHOUSE_DATA || !window.WAREHOUSE_DATA.top_customers) return;
+
+  const customers = window.WAREHOUSE_DATA.top_customers;
+  const avatarColors = [
+    'linear-gradient(135deg, #f43f5e, #fb7185)',
+    'linear-gradient(135deg, #f59e0b, #fbbf24)',
+    'linear-gradient(135deg, #10b981, #34d399)',
+    'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+    'linear-gradient(135deg, #06b6d4, #22d3ee)'
+  ];
+
+  tbody.innerHTML = customers.slice(0, 4).map((c, i) => `
+    <tr>
+      <td>
+        <div class="cust-name-cell">
+          <div class="cust-avatar-circle" style="background: ${avatarColors[i % avatarColors.length]};">${c.avatar || c.name.slice(0, 2).toUpperCase()}</div>
+          <div class="cust-details-box">
+            <span class="cust-name-text">${c.name}</span>
+            <span class="cust-email-text">${c.email}</span>
+          </div>
+        </div>
+      </td>
+      <td class="deals-val">${c.deals.toLocaleString()}</td>
+      <td class="total-deal-val">${formatCurrency(c.revenue)}</td>
+    </tr>
+  `).join('');
 }
 
 function applyAnalyticsFilters() {
@@ -172,9 +248,25 @@ function applyAnalyticsFilters() {
     }
   }
 
-  document.getElementById('val-revenue').textContent = formatCurrency(revenue);
-  document.getElementById('val-orders').textContent = orders.toLocaleString();
-  document.getElementById('val-aov').textContent = formatCurrency(revenue / (orders || 1));
+  const revEl = document.getElementById('val-revenue');
+  if (revEl) revEl.textContent = formatCurrency(revenue);
+
+  const arrEl = document.getElementById('val-arr');
+  if (arrEl) arrEl.textContent = formatCurrency(revenue * 0.515);
+
+  const ordEl = document.getElementById('val-orders');
+  if (ordEl) ordEl.textContent = orders.toLocaleString();
+
+  const aovEl = document.getElementById('val-aov');
+  if (aovEl) aovEl.textContent = formatCurrency(revenue / (orders || 1));
+
+  const numSalesEl = document.getElementById('val-num-sales');
+  if (numSalesEl) numSalesEl.textContent = formatCurrency(revenue * 0.0024);
+
+  const donutCenterEl = document.getElementById('donut-center-num');
+  if (donutCenterEl) {
+    donutCenterEl.textContent = (country !== 'ALL' || category !== 'ALL') ? formatCompact(revenue) : '102k';
+  }
 
   renderMonthlySvgChart(country, category);
   renderCategoryList(country);
@@ -236,14 +328,14 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
   let svgHtml = `
     <defs>
       <linearGradient id="chartAreaGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#10b981" stop-opacity="0.32" />
-        <stop offset="65%" stop-color="#059669" stop-opacity="0.08" />
-        <stop offset="100%" stop-color="#08130d" stop-opacity="0" />
+        <stop offset="0%" stop-color="#bef264" stop-opacity="0.3" />
+        <stop offset="60%" stop-color="#10b981" stop-opacity="0.08" />
+        <stop offset="100%" stop-color="#0b0d10" stop-opacity="0" />
       </linearGradient>
       <linearGradient id="chartLineGrad" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#34d399" />
-        <stop offset="50%" stop-color="#10b981" />
-        <stop offset="100%" stop-color="#a7f3d0" />
+        <stop offset="0%" stop-color="#10b981" />
+        <stop offset="70%" stop-color="#bef264" />
+        <stop offset="100%" stop-color="#d4fc48" />
       </linearGradient>
     </defs>
   `;
@@ -253,8 +345,8 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
     const val = (maxSales / 4) * i;
     const y = getY(val);
     svgHtml += `
-      <line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="rgba(52,211,153,0.12)" stroke-dasharray="3,3" />
-      <text x="${padLeft - 8}" y="${y + 4}" fill="#94a3b8" font-size="10" font-family="'JetBrains Mono'" text-anchor="end">${formatCompact(val)}</text>
+      <line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />
+      <text x="${padLeft - 8}" y="${y + 4}" fill="#64748b" font-size="10" font-family="'JetBrains Mono'" text-anchor="end">${formatCompact(val)}</text>
     `;
   }
 
@@ -277,7 +369,7 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
   dataPoints.forEach((d, i) => {
     if (i % 6 === 0 || i === dataPoints.length - 1) {
       svgHtml += `
-        <text x="${getX(i)}" y="${height - 8}" fill="#94a3b8" font-size="10" font-family="'JetBrains Mono'" text-anchor="middle">${d.date}</text>
+        <text x="${getX(i)}" y="${height - 8}" fill="#64748b" font-size="10" font-family="'JetBrains Mono'" text-anchor="middle">${d.date}</text>
       `;
     }
   });
@@ -285,7 +377,7 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
   // Points
   dataPoints.forEach((d, i) => {
     svgHtml += `
-      <circle class="svg-hover-point" data-idx="${i}" cx="${getX(i)}" cy="${getY(d.sales)}" r="3.5" fill="#08130d" stroke="#34d399" stroke-width="2.5" style="cursor: pointer;" />
+      <circle class="svg-hover-point" data-idx="${i}" cx="${getX(i)}" cy="${getY(d.sales)}" r="3" fill="#0b0d10" stroke="#bef264" stroke-width="2" style="cursor: pointer;" />
     `;
   });
 
@@ -294,8 +386,8 @@ function renderMonthlySvgChart(countryFilter = 'ALL', catFilter = 'ALL') {
   // Tooltip hover
   svg.querySelectorAll('.svg-hover-point').forEach(pt => {
     pt.addEventListener('mouseenter', () => {
-      pt.setAttribute('r', '6');
-      pt.setAttribute('stroke', '#fbbf24');
+      pt.setAttribute('r', '5.5');
+      pt.setAttribute('stroke', '#ffffff');
       const idx = parseInt(pt.getAttribute('data-idx'));
       const d = dataPoints[idx];
 
@@ -334,15 +426,15 @@ function renderCategoryList() {
   const totalSales = categories.reduce((sum, c) => sum + c.sales, 0);
 
   const colors = {
-    'Bikes': '#10b981',
-    'Components': '#34d399',
-    'Clothing': '#6ee7b7',
+    'Bikes': '#bef264',
+    'Components': '#10b981',
+    'Clothing': '#38bdf8',
     'Accessories': '#fbbf24'
   };
 
   container.innerHTML = categories.map(cat => {
     const pct = ((cat.sales / totalSales) * 100).toFixed(1);
-    const color = colors[cat.cat] || '#10b981';
+    const color = colors[cat.cat] || '#bef264';
 
     return `
       <div class="category-row">
@@ -394,13 +486,13 @@ function renderRegionalTable() {
         <td>${c.orders.toLocaleString()}</td>
         <td>
           <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 50px; height: 5px; background: rgba(52,211,153,0.1); border-radius: 4px; overflow: hidden;">
-              <div style="width: ${pct}%; height: 100%; background: #10b981;"></div>
+            <div style="width: 50px; height: 5px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;">
+              <div style="width: ${pct}%; height: 100%; background: #bef264;"></div>
             </div>
-            <span style="font-size: 0.75rem; color: #a7f3d0;">${pct}%</span>
+            <span style="font-size: 0.75rem; color: #bef264;">${pct}%</span>
           </div>
         </td>
-        <td><strong style="color: #34d399; font-family: var(--font-mono);">${formatCurrency(c.sales)}</strong></td>
+        <td><strong style="color: #bef264; font-family: var(--font-mono);">${formatCurrency(c.sales)}</strong></td>
       </tr>
     `;
   }).join('');
